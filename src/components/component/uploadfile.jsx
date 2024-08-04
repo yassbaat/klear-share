@@ -281,7 +281,7 @@ export function Uploadfile() {
             <DialogContent className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-lg">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-semibold text-center">
-                  Boom! Here's your download link 🔻
+                  Boom! Here &apos s your download link 🔻
                 </DialogTitle>
               </DialogHeader>
               <DialogDescription className="mt-4 flex flex-col gap-4">
