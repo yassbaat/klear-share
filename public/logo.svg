@@ -1,0 +1,13 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_107_1849)">
+<rect width="400" height="400" rx="61" fill="#F43F5E"/>
+<rect x="69" y="85" width="262" height="230" rx="61" fill="#FECACA"/>
+<path d="M210.392 280C205.773 288 194.226 288 189.608 280L139.378 193C134.759 185 140.533 175 149.771 175L250.229 175C259.467 175 265.241 185 260.622 193L210.392 280Z" fill="#F43F5E"/>
+<rect x="184" y="85" width="32" height="101" fill="#F43F5E"/>
+</g>
+<defs>
+<clipPath id="clip0_107_1849">
+<rect width="400" height="400" fill="white"/>
+</clipPath>
+</defs>
+</svg>
