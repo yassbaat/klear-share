@@ -1,4 +1,4 @@
-# KlearShare 🎉
+# KlearShare ![alt text](public/logo.svg)
 
 KlearShare is a file-sharing application that enables users to upload files anonymously and receive a shareable download link. It features drag-and-drop functionality, real-time upload progress tracking, and a visually engaging interface.
 
