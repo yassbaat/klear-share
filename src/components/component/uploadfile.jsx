@@ -22,11 +22,13 @@ import { useToast } from "@/components/ui/use-toast";
 import ConfettiEffect from "@/components/ConfettiEffect";
 import Image from "next/image";
 import { ClipboardIcon } from "lucide-react";
+import ReCAPTCHA from "react-google-recaptcha";
 
 // Initialize Supabase Client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const reCAPTCHASiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
 export function Uploadfile() {
   const [isDragging, setIsDragging] = useState(false);
@@ -40,7 +42,9 @@ export function Uploadfile() {
   const { toast } = useToast();
   const [showConfetti, setShowConfetti] = useState(false);
   const confettiTimeoutRef = useRef(null);
-
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const recaptchaRef = useRef(null);
   const handleCopyLink = () => {
     if (fileLink) {
       setShowConfetti(true);
@@ -73,13 +77,14 @@ export function Uploadfile() {
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
   };
-
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
     if (file && file.size <= 20971520) {
       setSelectedFile(file);
+      resetCaptcha();
+      setShowCaptcha(true); // Show CAPTCHA when file is selected
     } else if (file.size >= 20971520) {
       alert("File is too large or invalid.");
     }
@@ -96,9 +101,12 @@ export function Uploadfile() {
 
     const file = e.target.files[0];
     if (file) {
-      // Check if file exists before accessing properties
       if (file.size <= 20971520) {
         setSelectedFile(file);
+        resetCaptcha();
+        console.log(captchaToken);
+        setShowCaptcha(true); // Show CAPTCHA when file is selected
+        console.log(captchaToken);
       } else if (file.size >= 20971520) {
         alert("File is too large or invalid.");
       }
@@ -108,7 +116,7 @@ export function Uploadfile() {
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile || !captchaToken) return;
 
     try {
       setUploading(true);
@@ -177,6 +185,19 @@ export function Uploadfile() {
   useEffect(() => {
     console.log("Card open state changed:", dialogOpen);
   }, [dialogOpen]);
+
+  const resetCaptcha = () => {
+    if (recaptchaRef.current) {
+      recaptchaRef.current.reset();
+      console.log("CAPTCHA was reset");
+    } else {
+      console.log("CAPTCHA reset failed: recaptchaRef.current is null");
+    }
+    setCaptchaToken(null);
+  };
+  const handleCaptchaChange = (token) => {
+    setCaptchaToken(token);
+  };
 
   return (
     <Card className="flex flex-col items-center w-full min-h-screen p-4 bg-red-50">
@@ -258,13 +279,21 @@ export function Uploadfile() {
                 </Button>
               </div>
             )}
+            {selectedFile && (
+              <ReCAPTCHA
+                sitekey={reCAPTCHASiteKey}
+                onChange={handleCaptchaChange}
+                ref={recaptchaRef} // Ensure ref is assigned here
+                className="flex mx-auto mt-4 justify-center"
+              />
+            )}
           </CardContent>
           <CardFooter className="flex w-full mt-4">
             <Button
               variant="secondary"
               className="w-full"
               onClick={handleUpload}
-              disabled={!selectedFile || uploading}
+              disabled={!selectedFile || uploading || !captchaToken}
             >
               {uploading ? "Uploading..." : "Upload"}
             </Button>
